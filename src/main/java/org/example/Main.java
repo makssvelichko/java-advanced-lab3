@@ -10,9 +10,10 @@ import org.example.examples.StudentSQLGenerator;
 public class Main {
     public static void main(String[] args) {
 
+        // Створення об'єкта Car
         Car car = new Car(1, "Toyota", "Camry", 2021, 30000.0);
 
-
+        // Генерація SQL-запитів для Car
         String carCreateQuery = CarSQLGenerator.CREATE_QUERY;
         String carInsertQuery = CarSQLGenerator.generateInsertQuery(car);
         String carUpdateQuery = CarSQLGenerator.generateUpdateQuery(car);
@@ -25,7 +26,7 @@ public class Main {
         System.out.println("DELETE Query (Car): " + carDeleteQuery);
         System.out.println("SELECT Query (Car): " + carSelectQuery);
 
-
+        // Створення об'єкта Message
         Message message = new Message("Hello, how are you?", "Alice", "Bob");
         message.setId(1);
 

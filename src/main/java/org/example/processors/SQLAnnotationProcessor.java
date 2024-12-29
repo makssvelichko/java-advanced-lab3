@@ -14,10 +14,21 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
+/**
+ * Annotation processor for generating SQL queries and helper classes for classes
+ * annotated with @Table and @Column.
+ */
 @SupportedAnnotationTypes({"org.example.annotations.Table"})
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class SQLAnnotationProcessor extends AbstractProcessor {
 
+    /**
+     * Processes all elements annotated with @Table and generates SQL query helper classes.
+     *
+     * @param annotations the set of annotations processed by this processor
+     * @param roundEnv the environment for information about the current and prior round
+     * @return true if the annotations are processed successfully
+     */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (Element element : roundEnv.getElementsAnnotatedWith(Table.class)) {
@@ -28,6 +39,11 @@ public class SQLAnnotationProcessor extends AbstractProcessor {
         return true;
     }
 
+    /**
+     * Processes a class annotated with @Table and generates corresponding SQL queries.
+     *
+     * @param classElement the class element annotated with @Table
+     */
     private void processTable(TypeElement classElement) {
         Table tableAnnotation = classElement.getAnnotation(Table.class);
         String tableName = tableAnnotation.name();
@@ -76,6 +92,12 @@ public class SQLAnnotationProcessor extends AbstractProcessor {
         generateSQLGeneratorClass(classElement, tableName, createQuery.toString(), insertQuery, updateQuery, deleteQuery, fieldsMapping.toString());
     }
 
+    /**
+     * Maps a Java type to an SQL type.
+     *
+     * @param typeMirror the Java type to be mapped
+     * @return the corresponding SQL type
+     */
     private String getSQLType(TypeMirror typeMirror) {
         switch (typeMirror.toString()) {
             case "int":
@@ -91,6 +113,17 @@ public class SQLAnnotationProcessor extends AbstractProcessor {
         }
     }
 
+    /**
+     * Generates a helper class for SQL queries based on the annotated class.
+     *
+     * @param classElement the annotated class element
+     * @param tableName the name of the SQL table
+     * @param createQuery the SQL CREATE TABLE query
+     * @param insertQuery the SQL INSERT query
+     * @param updateQuery the SQL UPDATE query
+     * @param deleteQuery the SQL DELETE query
+     * @param fieldsMapping the mapping of field names to SQL column types
+     */
     private void generateSQLGeneratorClass(TypeElement classElement, String tableName, String createQuery, String insertQuery, String updateQuery, String deleteQuery, String fieldsMapping) {
         String packageName = processingEnv.getElementUtils().getPackageOf(classElement).getQualifiedName().toString();
         String className = classElement.getSimpleName() + "SQLGenerator";
